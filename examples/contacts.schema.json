@@ -1,0 +1,114 @@
+{
+    "contacts": {
+        "fields": [
+            {
+                "Field": "id",
+                "Type": "int(11)",
+                "Null": false,
+                "Key": "PRI",
+                "Default": null,
+                "Extra": "auto_increment"
+            },
+            {
+                "Field": "name",
+                "Type": "varchar(50)",
+                "Null": false,
+                "Key": "",
+                "Default": null,
+                "Extra": ""
+            },
+            {
+                "Field": "active",
+                "Type": "tinyint(1)",
+                "Null": false,
+                "Key": "",
+                "Default": "1",
+                "Extra": ""
+            },
+            {
+                "Field": "createdAt",
+                "Type": "timestamp",
+                "Null": false,
+                "Key": "",
+                "Default": "CURRENT_TIMESTAMP",
+                "Extra": ""
+            },
+            {
+                "Field": "updatedAt",
+                "Type": "timestamp",
+                "Null": false,
+                "Key": "",
+                "Default": "CURRENT_TIMESTAMP",
+                "Extra": "on update CURRENT_TIMESTAMP"
+            }
+        ],
+        "relationsFromTable": [],
+        "relationsToTable": [
+            {
+                "localField": "id",
+                "foreignTable": "phones",
+                "foreignField": "contacts_id"
+            }
+        ]
+    },
+    "phones": {
+        "fields": [
+            {
+                "Field": "id",
+                "Type": "int(11)",
+                "Null": false,
+                "Key": "PRI",
+                "Default": null,
+                "Extra": "auto_increment"
+            },
+            {
+                "Field": "contacts_id",
+                "Type": "int(11)",
+                "Null": false,
+                "Key": "MUL",
+                "Default": null,
+                "Extra": ""
+            },
+            {
+                "Field": "phone",
+                "Type": "varchar(50)",
+                "Null": false,
+                "Key": "",
+                "Default": "''",
+                "Extra": ""
+            },
+            {
+                "Field": "phone_type",
+                "Type": "varchar(50)",
+                "Null": true,
+                "Key": "",
+                "Default": null,
+                "Extra": ""
+            },
+            {
+                "Field": "createdAt",
+                "Type": "timestamp",
+                "Null": false,
+                "Key": "",
+                "Default": "CURRENT_TIMESTAMP",
+                "Extra": ""
+            },
+            {
+                "Field": "updatedAt",
+                "Type": "timestamp",
+                "Null": false,
+                "Key": "",
+                "Default": "CURRENT_TIMESTAMP",
+                "Extra": "on update CURRENT_TIMESTAMP"
+            }
+        ],
+        "relationsFromTable": [
+            {
+                "localField": "contacts_id",
+                "foreignTable": "contacts",
+                "foreignField": "id"
+            }
+        ],
+        "relationsToTable": []
+    }
+}
