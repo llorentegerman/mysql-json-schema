@@ -29,6 +29,7 @@ And here an [sql script](examples/contacts.sql) to create that schema.
 
 A quick example to export the schema to some folder.
 ```
+import mysql from 'mysql-json-schema';
 mysql.ExportSchemaToFiles({
     user: 'root',
     password: 'root',
@@ -41,6 +42,7 @@ mysql.ExportSchemaToFiles({
 
 How to work with the JSON schema:
 ```
+import mysql from 'mysql-json-schema';
 const connection = mysql.CreateConnection({
     user: 'root',
     password: 'root',

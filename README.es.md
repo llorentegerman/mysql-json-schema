@@ -29,6 +29,7 @@ Y aqui el [sql script](examples/contacts.sql) utilizado para crear el esquema an
 
 Un breve ejemplo para exportar un esquema en una carpeta especificada por parámetro.
 ```
+import mysql from 'mysql-json-schema';
 mysql.ExportSchemaToFiles({
     user: 'root',
     password: 'root',
@@ -41,6 +42,7 @@ mysql.ExportSchemaToFiles({
 
 Un ejemplo sobre como extraer un esquema, y como trabajar con el. No olvidar que debemos cerrar la conexión una vez que terminamos de utilizarla:
 ```
+import mysql from 'mysql-json-schema';
 const connection = mysql.CreateConnection({
     user: 'root',
     password: 'root',
