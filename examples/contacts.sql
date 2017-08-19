@@ -28,30 +28,35 @@ CREATE TABLE IF NOT EXISTS `contacts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla contacts.contacts: ~0 rows (aproximadamente)
-DELETE FROM `contacts`;
-/*!40000 ALTER TABLE `contacts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `contacts` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 -- Volcando estructura para tabla contacts.phones
 DROP TABLE IF EXISTS `phones`;
 CREATE TABLE IF NOT EXISTS `phones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contacts_id` int(11) NOT NULL,
   `phone` varchar(50) NOT NULL DEFAULT '''''',
-  `phone_type` varchar(50) DEFAULT NULL,
+  `phone_type` int(11) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `contacts_id` (`contacts_id`),
-  CONSTRAINT `fk_phones_contact` FOREIGN KEY (`contacts_id`) REFERENCES `contacts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_phones_phonetype` (`phone_type`),
+  CONSTRAINT `fk_phones_contact` FOREIGN KEY (`contacts_id`) REFERENCES `contacts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_phones_phonetype` FOREIGN KEY (`phone_type`) REFERENCES `phone_types` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla contacts.phones: ~0 rows (aproximadamente)
-DELETE FROM `phones`;
-/*!40000 ALTER TABLE `phones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phones` ENABLE KEYS */;
+-- La exportación de datos fue deseleccionada.
+-- Volcando estructura para tabla contacts.phone_types
+DROP TABLE IF EXISTS `phone_types`;
+CREATE TABLE IF NOT EXISTS `phone_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

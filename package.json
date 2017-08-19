@@ -1,32 +1,37 @@
 {
   "name": "mysql-json-schema",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Export MySql schemas. Relations included.",
   "main": "index.js",
   "author": "German Llorente <llorentegerman@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "test": "babel-node spec/run.js",
     "compile": "./node_modules/.bin/babel ./src -d ./dist"
   },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/llorentegerman/mysql-json-schema"
-    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llorentegerman/mysql-json-schema"
+  },
   "keywords": [
-        "mysql",
-        "mysql json",
-        "mysql json schema",
-        "mysql schema",
-        "json schema"
-    ],
-    "bugs": {
-        "url": "https://github.com/llorentegerman/mysql-json-schema/issues"
-    },
-    "homepage": "https://github.com/llorentegerman/mysql-json-schema#readme",
+    "mysql",
+    "mysql json",
+    "mysql json schema",
+    "mysql schema",
+    "json schema"
+  ],
+  "bugs": {
+    "url": "https://github.com/llorentegerman/mysql-json-schema/issues"
+  },
+  "homepage": "https://github.com/llorentegerman/mysql-json-schema#readme",
   "dependencies": {
-    "mysql": "^2.14.1",
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1"
+    "babel-preset-stage-3": "^6.24.1",
+    "lodash": "^4.17.4",
+    "mysql": "^2.14.1"
+  },
+  "devDependencies": {
+    "jasmine": "^2.7.0"
   }
 }
