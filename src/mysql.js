@@ -99,11 +99,18 @@ const AddRelationsToSchema = (connection, schema) => {
                             if (!schema.tables[tableName]) {
                                 schema.tables[tableName] = { fields: [], relationsFromTable: [], relationsToTable: [] };
                             }
-
-                            schema.tables[tableName].relationsFromTable = relationsFromTable;
+                            
+                            schema.tables[tableName].relationsFromTable = schema.tables[tableName].relationsFromTable.concat(relationsFromTable);
+                            relationsFromTable.forEach((relation) => {
+                                const fieldFKIndex = lodash.findIndex(schema.tables[tableName].fields, (f) => f.Field === relation.localField);
+                                if (fieldFKIndex >= 0) {
+                                    schema.tables[tableName].fields[fieldFKIndex].isForeignKey = true;
+                                }
+                            });
+                            
                             return GetRelationsToTable(connection, tableName)
                                 .then((relationsToTable) => {
-                                    schema.tables[tableName].relationsToTable = relationsToTable;
+                                    schema.tables[tableName].relationsToTable = schema.tables[tableName].relationsToTable.concat(relationsToTable);
                                 });
                         })
                 );
@@ -119,8 +126,8 @@ const AddRelationsByFieldNameToSchema = (schema, aliases = [], ignoreDefaultName
     tableNames.forEach((tableName, index, array) => {
         const aliasesFromThisTable = lodash.filter(aliases, (a) => a.localTable === tableName);
         const aliasesToThisTable = lodash.filter(aliases, (a) => a.foreignTable === tableName);
-        schema.tables[tableName].relationsFromTable = GetRelationsFromTableByFieldNames(tableName, schema, aliasesFromThisTable, ignoreDefaultNames, prefix, sufix);
-        schema.tables[tableName].relationsToTable = GetRelationsToTableByFieldNames(tableName, schema, aliasesToThisTable, ignoreDefaultNames, prefix, sufix);
+        GetRelationsFromTableByFieldNames(tableName, schema, aliasesFromThisTable, ignoreDefaultNames, prefix, sufix);
+        GetRelationsToTableByFieldNames(tableName, schema, aliasesToThisTable, ignoreDefaultNames, prefix, sufix);
     });
     return schema;
 };
@@ -326,12 +333,14 @@ const GetRelationsFromTableByFieldNames = (tableName, schema, aliases = [], igno
                     p.foreignTable === possibleForeignKeysNames[possible].tableName &&
                     p.foreignField === possibleForeignKeysNames[possible].foreignField);
 
-            (relationExists < 0) && relations.push({
-                localField: field.Field,
-                foreignTable: possibleForeignKeysNames[possible].tableName,
-                foreignField: possibleForeignKeysNames[possible].foreignField
-            });
-
+            if (relationExists < 0) {
+                relations.push({
+                    localField: field.Field,
+                    foreignTable: possibleForeignKeysNames[possible].tableName,
+                    foreignField: possibleForeignKeysNames[possible].foreignField
+                });
+                field.isForeignKey = true;
+            }
             const inverseRelationExists = lodash.findIndex(schema.tables[possibleForeignKeysNames[possible].tableName].relationsToTable,
                 (p) => p.localField === possibleForeignKeysNames[possible].foreignField &&
                     p.foreignTable === tableName &&
@@ -350,12 +359,17 @@ const GetRelationsFromTableByFieldNames = (tableName, schema, aliases = [], igno
             r.localField === alias.localField &&
             r.foreignTable === alias.foreignTable &&
             r.foreignField === alias.foreignField);
-        (relationExists < 0) && relations.push({
-            localField: alias.localField,
-            foreignTable: alias.foreignTable,
-            foreignField: alias.foreignField
-        });
-
+        if (relationExists < 0) {
+            relations.push({
+                localField: alias.localField,
+                foreignTable: alias.foreignTable,
+                foreignField: alias.foreignField
+            });
+            const fieldFKIndex = lodash.findIndex(schema.tables[tableName].fields, (f) => f.Field === alias.localField);
+            if (fieldFKIndex >= 0) {
+                schema.tables[tableName].fields[fieldFKIndex].isForeignKey = true;
+            }
+        }
         const inverseRelationExists = lodash.findIndex(schema.tables[alias.foreignTable].relationsToTable,
             (p) => p.localField === alias.foreignField &&
                 p.foreignTable === alias.localTable &&
@@ -412,11 +426,17 @@ const GetRelationsToTableByFieldNames = (tableName, schema, aliases = [], ignore
                 (p) => p.localField === fields[possible].Field &&
                     p.foreignTable === tableName &&
                     p.foreignField === key);
-            (inverseRelationExists < 0) && schema.tables[currTableName].relationsFromTable.push({
-                localField: fields[possible].Field,
-                foreignTable: tableName,
-                foreignField: key
-            });
+            if (inverseRelationExists < 0) {
+                schema.tables[currTableName].relationsFromTable.push({
+                    localField: fields[possible].Field,
+                    foreignTable: tableName,
+                    foreignField: key
+                });
+                const fieldFKIndex = lodash.findIndex(schema.tables[currTableName].fields, (f) => f.Field === possible);
+                if (fieldFKIndex >= 0) {
+                    schema.tables[currTableName].fields[fieldFKIndex].isForeignKey = true;
+                }
+            }
         }
     });
 
@@ -436,11 +456,17 @@ const GetRelationsToTableByFieldNames = (tableName, schema, aliases = [], ignore
             (p) => p.localField === alias.localField &&
                 p.foreignTable === alias.foreignTable &&
                 p.foreignField === alias.foreignField);
-        (inverseRelationExists < 0) && schema.tables[alias.localTable].relationsFromTable.push({
-            localField: alias.localField,
-            foreignTable: alias.foreignTable,
-            foreignField: alias.foreignField
-        });
+        if (inverseRelationExists < 0) {
+            schema.tables[alias.localTable].relationsFromTable.push({
+                localField: alias.localField,
+                foreignTable: alias.foreignTable,
+                foreignField: alias.foreignField
+            });
+            const fieldFKIndex = lodash.findIndex(schema.tables[alias.localTable].fields, (f) => f.Field === alias.localField);
+            if (fieldFKIndex >= 0) {
+                schema.tables[alias.localTable].fields[fieldFKIndex].isForeignKey = true;
+            }
+        }
     });
     return relations;
 }
